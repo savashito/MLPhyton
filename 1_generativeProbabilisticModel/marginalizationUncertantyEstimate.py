@@ -50,16 +50,20 @@ import corner
 # Make the triangle plot.
 burnin = 1000
 samples = sampler.chain[:, burnin:, :].reshape((-1, ndim))
-
-fig = corner.corner(samples, labels=["$m$", "$b$", "$\ln\,f$"],
-					  truths=[m_true, b_true, np.log(f_true)])
-fig.savefig("line-triangle.png")
+f = open('MCMC_samples', 'w')
+np.save(f, samples)
+f.close()
+exit()
+fig = corner.corner(samples, labels=["$m$", "$b$", "$\ln\,f$"],truths=[m_true, b_true, np.log(f_true)])
+# fig.savefig("line-triangle.png")
 
 # Plot some samples onto the data.
 plt.figure()
 xl = np.array([0, 10])
 for m, b, lnf in samples[np.random.randint(len(samples), size=100)]:
 	plt.plot(xl, m*xl+b, color="k", alpha=0.1)
+import pdb; pdb.set_trace()
+
 plt.plot(xl, m_true*xl+b_true, color="r", lw=2, alpha=0.8)
 plt.errorbar(x, y, yerr=yerr, fmt=".k")
 plt.ylim(-9, 9)
